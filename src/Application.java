@@ -12,5 +12,6 @@ public class Application {
         table.addCurrency(bat);
         table.toString();
         System.out.println(table.buyCurrency(euro, dollar, 10));
+        System.out.println(table.buyCurrency(dollar, euro, 10));
     }
 }

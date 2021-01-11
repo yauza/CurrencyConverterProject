@@ -2,6 +2,8 @@ package Classes;
 
 import Interfaces.ICurrencyConverter;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.SortedSet;
@@ -31,6 +33,14 @@ public class CurrencyTable implements ICurrencyConverter {
 
     @Override
     public double buyCurrency(Currency toBuy, Currency toSell, double amount) {
-        return toBuy.getCurrentValue() * amount / toSell.getCurrentValue();
+        return round(toBuy.getCurrentValue() * amount / toSell.getCurrentValue(), 4);
+    }
+
+    private static double round(double value, int places){
+        if(places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(Double.toString(value));
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 }
