@@ -10,5 +10,18 @@ public interface ICurrencyConverter {
      * @param toSell
      * @return
      */
-    double buyCurrency(Currency toBuy, Currency toSell, double amount);
+    double buyCurrency(Currency toBuy, double amount, Currency toSell);
+
+    /**
+     *
+     * Returns the amount of toBuy currency possible to buy with the
+     * amount of toSell currency.
+     *
+     * @param toSell
+     * @param amount
+     * @param toBuy
+     * @return
+     */
+
+    double sellCurrency(Currency toSell, double amount, Currency toBuy);
 }

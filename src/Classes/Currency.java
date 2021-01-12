@@ -2,13 +2,15 @@ package Classes;
 
 public class Currency implements Comparable<Currency>{
     private String name;
+    private int conversionRate;
     private String currencyCode;
     private double currentValue;
 
-    public Currency(String name, String currencyCode, double currentValue){
+    public Currency(String name, int conversionRate, String currencyCode, double currentValue){
         this.name = name;
-        this.currentValue = currentValue;
+        this.conversionRate = conversionRate;
         this.currencyCode = currencyCode;
+        this.currentValue = currentValue;
     }
 
     public void setCurrentValue(double currentValue) {
@@ -23,6 +25,8 @@ public class Currency implements Comparable<Currency>{
         this.currencyCode = currencyCode;
     }
 
+    public void setConversionRate(int conversionRate){ this.conversionRate = conversionRate; }
+
     public String getName(){
         return this.name;
     }
@@ -34,6 +38,8 @@ public class Currency implements Comparable<Currency>{
     public String getCurrencyCode() {
         return currencyCode;
     }
+
+    public int getConversionRate() {return conversionRate; }
 
     @Override
     public int compareTo(Currency o) {

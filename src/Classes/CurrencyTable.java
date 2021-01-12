@@ -4,13 +4,10 @@ import Interfaces.ICurrencyConverter;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Comparator;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 public class CurrencyTable implements ICurrencyConverter {
-    public SortedSet<Currency> table = new TreeSet<>();
+    private SortedSet<Currency> table = new TreeSet<>();
 
     public CurrencyTable(){ }
 
@@ -19,10 +16,10 @@ public class CurrencyTable implements ICurrencyConverter {
     }
 
     public String toString(){
-        System.out.println("---------------------------------------------");
+        System.out.println("-------------------------------------------------------------");
         for(Currency c : table){
-            System.out.printf("|%-20s | %-10s | %-6s |\n", c.getName(), c.getCurrencyCode(), c.getCurrentValue());
-            System.out.println("---------------------------------------------");
+            System.out.printf("|%-36s | %-10s | %-6s |\n", c.getName(), c.getConversionRate() + " " + c.getCurrencyCode(), c.getCurrentValue());
+            System.out.println("-------------------------------------------------------------");
         }
         return "";
     }
@@ -31,10 +28,13 @@ public class CurrencyTable implements ICurrencyConverter {
         table.add(currency);
     }
 
-    @Override
-    public double buyCurrency(Currency toBuy, Currency toSell, double amount) {
-        return round(toBuy.getCurrentValue() * amount / toSell.getCurrentValue(), 4);
+    public void updateTable(List<Currency> list){
+        this.table = new TreeSet<>();
+        for(Currency c : list){
+            table.add(c);
+        }
     }
+
 
     private static double round(double value, int places){
         if(places < 0) throw new IllegalArgumentException();
@@ -42,5 +42,17 @@ public class CurrencyTable implements ICurrencyConverter {
         BigDecimal bd = new BigDecimal(Double.toString(value));
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
+    }
+
+    @Override
+    public double buyCurrency(Currency toBuy, double amount, Currency toSell) {
+        if(!table.contains(toSell) || !table.contains(toBuy)) throw new IllegalArgumentException("Te waluty nie są obsługiwane!");
+        return round((amount * toBuy.getCurrentValue() * toSell.getConversionRate())/ (toSell.getCurrentValue() * toBuy.getConversionRate()), 4);
+    }
+
+    @Override
+    public double sellCurrency(Currency toSell, double amount, Currency toBuy) {
+        if(!table.contains(toSell) || !table.contains(toBuy)) throw new IllegalArgumentException("Te waluty nie są obsługiwane!");
+        return round((amount * toSell.getCurrentValue() * toBuy.getConversionRate())/ (toBuy.getCurrentValue() * toSell.getConversionRate()), 4);
     }
 }
