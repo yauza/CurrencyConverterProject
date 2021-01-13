@@ -1,6 +1,7 @@
 import Classes.Currency;
 import Classes.CurrencyTable;
 import Classes.DataLoader;
+import UI.AppWindow;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -32,5 +33,7 @@ public class Application {
         } catch (SAXException e) {
             e.printStackTrace();
         }
+
+        //AppWindow app = new AppWindow(table);
     }
 }
