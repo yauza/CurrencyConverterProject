@@ -55,4 +55,15 @@ public class CurrencyTable implements ICurrencyConverter {
         if(!table.contains(toSell) || !table.contains(toBuy)) throw new IllegalArgumentException("Te waluty nie są obsługiwane!");
         return round((amount * toSell.getCurrentValue() * toBuy.getConversionRate())/ (toBuy.getCurrentValue() * toSell.getConversionRate()), 4);
     }
+
+    public Currency findInTable(String name){
+        for(Currency c : table){
+            if(c.getName().equals(name)) return c;
+        }
+        return null;
+    }
+
+    public SortedSet<Currency> getTable(){
+        return this.table;
+    }
 }

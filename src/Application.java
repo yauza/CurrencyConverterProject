@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class Application {
     public static void main(String [] args){
-        Currency dollar = new Currency("dolar amerykański", 1,"USD", 3.6998);
+        Currency zloty = new Currency("złoty", 1,"PLN", 1);
         Currency euro = new Currency("euro", 1, "EUR", 4.5325);
         Currency rup = new Currency("rupia indonezyjska", 10000,"IDR", 2.631);
         Currency won = new Currency("won południowokoreański", 100, "KRW", 0.338);
@@ -25,7 +25,7 @@ public class Application {
             dl.loadData("NBP");
             table.updateTable(dl.getListOfCurrencies());
             table.toString();
-            System.out.println(table.buyCurrency(won, 2, rup));
+            System.out.println(table.buyCurrency(euro, 2, zloty));
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -34,6 +34,6 @@ public class Application {
             e.printStackTrace();
         }
 
-        //AppWindow app = new AppWindow(table);
+        AppWindow app = new AppWindow(table);
     }
 }

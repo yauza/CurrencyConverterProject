@@ -39,7 +39,7 @@ public class DataLoader {
         DocumentBuilder docBuilder = dbf.newDocumentBuilder();
         System.out.println(this.getCurrentDate());
 
-        URL url = new URL("https://www.nbp.pl/kursy/xml/a006z210112.xml");
+        URL url = new URL("https://www.nbp.pl/kursy/xml/a007z210113.xml");
         InputStream stream = url.openStream();
         Document doc = docBuilder.parse(stream);
         this.list = new LinkedList<>();
@@ -62,6 +62,7 @@ public class DataLoader {
 
             }
         }
+        this.list.add(new Currency("złoty", 1, "PLN", 1));
     }
 
 
@@ -86,9 +87,16 @@ public class DataLoader {
                 date = calendar.getTime();
             }
         }else{
-            //
-            // to finish
-            //
+            if (dayOfWeek == 1) {
+                calendar.add(Calendar.DATE, -2);
+                date = calendar.getTime();
+            } else if(dayOfWeek == 2){
+                calendar.add(Calendar.DATE, -3);
+                date = calendar.getTime();
+            }else{
+                calendar.add(Calendar.DATE, -1);
+                date = calendar.getTime();
+            }
         }
 
         String res = formatter.format(date);
@@ -101,17 +109,15 @@ public class DataLoader {
         Date date = new Date();
         String toCheck = formatter.format(date);
 
-        if((Integer.parseInt(toCheck.substring(0, 2)) == 12 && Integer.parseInt(toCheck.substring(3, 4)) >= 15) || Integer.parseInt(toCheck.substring(0, 2)) > 12) return true;
+        if((Integer.parseInt(toCheck.substring(0, 2)) == 12 && Integer.parseInt(toCheck.substring(3, 5)) >= 15) || Integer.parseInt(toCheck.substring(0, 2)) > 12) return true;
         else return false;
     }
 
-    private int dayOfWeek(){
-
-    }
 
     public List<Currency> getListOfCurrencies(){
         return this.list;
     }
+
 
     public void setUrl(URL url) {
         this.url = url;

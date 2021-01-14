@@ -13,6 +13,10 @@ public class Currency implements Comparable<Currency>{
         this.currentValue = currentValue;
     }
 
+    public String toString(){
+        return this.name;
+    }
+
     public void setCurrentValue(double currentValue) {
         this.currentValue = currentValue;
     }
