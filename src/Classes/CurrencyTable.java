@@ -63,6 +63,18 @@ public class CurrencyTable implements ICurrencyConverter {
         return null;
     }
 
+    public String [] getListOfCurrencies(){
+        SortedSet<Currency> ts = this.getTable();
+        String [] res = new String[ts.size()];
+        int i = 0;
+        for(Currency c : ts){
+            res[i] = c.toString();
+            i++;
+        }
+
+        return res;
+    }
+
     public SortedSet<Currency> getTable(){
         return this.table;
     }

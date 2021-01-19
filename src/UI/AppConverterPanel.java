@@ -27,12 +27,14 @@ public class AppConverterPanel extends JPanel implements ActionListener{
 
     private JButton convertButton;
 
+    private JLabel title;
+
     public AppConverterPanel(CurrencyTable cT){
         this.cT = cT;
         //this.setLayout(null);
         this.setBackground(new Color(144, 143, 143, 255));
-        this.setSize(new Dimension(800, 400));
-        String [] currencies = getListOfCurrencies();
+        this.setSize(new Dimension(800, 200));
+        String [] currencies = cT.getListOfCurrencies();
 
         //-------------------------Combo boxes----------------------
 
@@ -48,11 +50,16 @@ public class AppConverterPanel extends JPanel implements ActionListener{
 
         toBuyLabel = new JLabel("Co chce:");
         Dimension size3 = toBuyLabel.getPreferredSize();
-        toBuyLabel.setBounds(400, 100, size3.width, size3.height);
+        toBuyLabel.setBounds(400, 100, 100, size3.height);
 
         toSellLabel = new JLabel("Co mam:");
         Dimension size4 = toSellLabel.getPreferredSize();
-        toSellLabel.setBounds(50, 100, size4.width, size4.height);
+        toSellLabel.setBounds(50, 100, 100, size4.height);
+
+        title = new JLabel("Przelicznik walut");
+        title.setFont(title.getFont().deriveFont(18.0f));
+        Dimension sizet = title.getPreferredSize();
+        title.setBounds(300, 5, 200, sizet.height);
 
         //-------------------------Text fields---------------------
 
@@ -66,9 +73,9 @@ public class AppConverterPanel extends JPanel implements ActionListener{
 
         //--------------------------Button--------------------------
 
-        convertButton = new JButton("Convert!");
+        convertButton = new JButton("Przelicz");
         Dimension size7 = convertButton.getPreferredSize();
-        convertButton.setBounds(330, 150, size7.width, size7.height);
+        convertButton.setBounds(330, 150, 100, size7.height);
         convertButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -84,6 +91,7 @@ public class AppConverterPanel extends JPanel implements ActionListener{
         this.add(toBuyText);
         this.add(toSellText);
         this.add(convertButton);
+        this.add(title);
 
     }
 
@@ -94,17 +102,17 @@ public class AppConverterPanel extends JPanel implements ActionListener{
         //updateLabel(petName);
     }
 
-    private String [] getListOfCurrencies(){
-        SortedSet<Currency> ts = this.cT.getTable();
-        String [] res = new String[ts.size()];
-        int i = 0;
-        for(Currency c : ts){
-            res[i] = c.toString();
-            i++;
-        }
-
-        return res;
-    }
+//    private String [] getListOfCurrencies(){
+//        SortedSet<Currency> ts = this.cT.getTable();
+//        String [] res = new String[ts.size()];
+//        int i = 0;
+//        for(Currency c : ts){
+//            res[i] = c.toString();
+//            i++;
+//        }
+//
+//        return res;
+//    }
 
     private void setValuesInTextFields(){
         if(toBuyText.getText().equals("") && toSellText.getText().equals("")){

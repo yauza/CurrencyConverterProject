@@ -29,17 +29,20 @@ public class DataLoader {
 
     public void loadData(String bank) throws ParserConfigurationException, SAXException, IOException {
         if(bank.equals("NBP")){
-            this.loadDataFromNBP();
+            String endOfURL = this.getTodaysCurrencyValues();
+            this.list = loadDataFromNBP(endOfURL);
+
         }
     }
 
 
-    private void loadDataFromNBP() throws IOException, SAXException, ParserConfigurationException {
+    private List<Currency> loadDataFromNBP(String endOfURL) throws IOException, SAXException, ParserConfigurationException {
+        List<Currency> res = new LinkedList<>();
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = dbf.newDocumentBuilder();
         System.out.println(this.getCurrentDate());
-
-        URL url = new URL("https://www.nbp.pl/kursy/xml/a007z210113.xml");
+        // "https://www.nbp.pl/kursy/xml/a007z210113.xml"
+        URL url = new URL("https://www.nbp.pl/kursy/xml/" + endOfURL + ".xml");
         InputStream stream = url.openStream();
         Document doc = docBuilder.parse(stream);
         this.list = new LinkedList<>();
@@ -58,11 +61,26 @@ public class DataLoader {
                         eElement.getElementsByTagName("kod_waluty").item(0).getTextContent(),
                         Double.parseDouble(val)
                 );
-                this.list.add(currency);
+                res.add(currency);
 
             }
         }
-        this.list.add(new Currency("złoty", 1, "PLN", 1));
+        res.add(new Currency("złoty", 1, "PLN", 1));
+        return res;
+    }
+
+
+    private String getTodaysCurrencyValues() throws ParserConfigurationException, IOException, SAXException {
+        URL url = new URL("https://www.nbp.pl/kursy/xml/dir.txt");
+        BufferedReader read = new BufferedReader(
+                new InputStreamReader(url.openStream()));
+        String i;
+        String resURL = "";
+        while ((i = read.readLine()) != null) {
+            if(i.charAt(0) == 'a') resURL = i;
+        }
+        read.close();
+        return resURL;
     }
 
 
@@ -103,6 +121,33 @@ public class DataLoader {
         return res;
     }
 
+
+    private List<Currency> loadYearData(Currency curr, String year) throws IOException, ParserConfigurationException, SAXException {
+        URL url = new URL("https://www.nbp.pl/kursy/xml/dir" + year + ".txt");
+        BufferedReader read = new BufferedReader(
+                new InputStreamReader(url.openStream()));
+        String i;
+
+        List<Currency> res = new LinkedList<>();
+        List<Currency> temp = new LinkedList<>();
+        while ((i = read.readLine()) != null) {
+            if(i.charAt(0) == 'a') {
+                temp = loadDataFromNBP(i);
+                res.add(getCurrFromList(temp, curr.getName()));
+            }
+        }
+        read.close();
+
+        return res;
+    }
+
+
+    private Currency getCurrFromList(List<Currency> list, String currName) throws ParserConfigurationException, IOException, SAXException {
+        for(Currency c : list){
+            if(currName.equals(c.getName())) return c;
+        }
+        return null;
+    }
 
     private boolean checkTime(){
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
