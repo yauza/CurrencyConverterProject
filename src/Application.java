@@ -24,8 +24,11 @@ public class Application {
         try {
             dl.loadData("NBP");
             table.updateTable(dl.getListOfCurrencies());
-            table.toString();
-            System.out.println(table.buyCurrency(euro, 2, zloty));
+
+            //System.out.println(dl.getYearData(euro, "2019"));
+
+            //table.toString();
+            //System.out.println(table.buyCurrency(euro, 2, zloty));
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -34,6 +37,6 @@ public class Application {
             e.printStackTrace();
         }
 
-        AppWindow app = new AppWindow(table);
+        AppWindow app = new AppWindow(table, dl);
     }
 }

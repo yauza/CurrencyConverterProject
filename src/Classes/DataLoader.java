@@ -40,7 +40,7 @@ public class DataLoader {
         List<Currency> res = new LinkedList<>();
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = dbf.newDocumentBuilder();
-        System.out.println(this.getCurrentDate());
+        //System.out.println(this.getCurrentDate());
         // "https://www.nbp.pl/kursy/xml/a007z210113.xml"
         URL url = new URL("https://www.nbp.pl/kursy/xml/" + endOfURL + ".xml");
         InputStream stream = url.openStream();
@@ -122,7 +122,18 @@ public class DataLoader {
     }
 
 
-    private List<Currency> loadYearData(Currency curr, String year) throws IOException, ParserConfigurationException, SAXException {
+    public LinkedList<Double> getYearMonthData(String curr, String year, boolean month, String monthNumber) throws ParserConfigurationException, SAXException, IOException {
+        List<Currency> currList = loadYearMonthData(curr, year, month, monthNumber);
+        LinkedList<Double> res = new LinkedList<>();
+        for(Currency c : currList){
+            res.add(c.getCurrentValue());
+        }
+
+        return res;
+    }
+
+
+    private List<Currency> loadYearMonthData(String curr, String year, boolean month, String monthNumber) throws IOException, ParserConfigurationException, SAXException {
         URL url = new URL("https://www.nbp.pl/kursy/xml/dir" + year + ".txt");
         BufferedReader read = new BufferedReader(
                 new InputStreamReader(url.openStream()));
@@ -132,8 +143,14 @@ public class DataLoader {
         List<Currency> temp = new LinkedList<>();
         while ((i = read.readLine()) != null) {
             if(i.charAt(0) == 'a') {
+                if(!month){
+                    if(!i.substring(7,9).equals(monthNumber)){
+                        continue;
+                    }
+                }
                 temp = loadDataFromNBP(i);
-                res.add(getCurrFromList(temp, curr.getName()));
+                res.add(getCurrFromList(temp, curr));
+
             }
         }
         read.close();

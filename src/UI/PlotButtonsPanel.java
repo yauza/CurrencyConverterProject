@@ -2,11 +2,16 @@ package UI;
 
 import Classes.Currency;
 import Classes.CurrencyTable;
+import Classes.DataLoader;
+import org.xml.sax.SAXException;
 
 import javax.swing.*;
+import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
 public class PlotButtonsPanel extends JPanel {
@@ -23,14 +28,17 @@ public class PlotButtonsPanel extends JPanel {
 
     private JButton draw;
 
-    public PlotButtonsPanel(CurrencyTable cT){
+    private DataLoader dl;
+
+    public PlotButtonsPanel(CurrencyTable cT, DataLoader dl){
         this.cT = cT;
+        this.dl = dl;
         this.setBackground(new Color(108, 121, 121, 50));
         this.setSize(new Dimension(800, 600));
 
         String [] currencies = cT.getListOfCurrencies();
         String [] plotType = {"Roczny", "Miesieczny"};
-        String [] whichYear = {"2020", "2019", "2018", "2017", "2016"};
+        String [] whichYear = {"2020", "2019", "2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005", "2004", "2003"};
         String [] whichMonth = {"Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień" };
 
         //-------------------------Combo boxes----------------------
@@ -66,7 +74,15 @@ public class PlotButtonsPanel extends JPanel {
         draw.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                drawPlot();
+                try {
+                    drawPlot();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                } catch (SAXException saxException) {
+                    saxException.printStackTrace();
+                } catch (ParserConfigurationException parserConfigurationException) {
+                    parserConfigurationException.printStackTrace();
+                }
             }
         });
 
@@ -79,30 +95,56 @@ public class PlotButtonsPanel extends JPanel {
         this.add(draw);
     }
 
-    private void drawPlot(){
+    private void drawPlot() throws IOException, SAXException, ParserConfigurationException {
+        boolean flag = getPlotType();
+        pp.setYearGraph(flag);
+        LinkedList<Double> list = new LinkedList<>();
+        list = dl.getYearMonthData(getWhichCurr(), getWhichYear(), flag, getWhichMonth());
+        pp.setValues(list);
+        pp.setVis(true);
         pp.repaint();
     }
-
-//    public void paintComponent(Graphics g){
-//        super.paintComponent(g);
-//        if(getPlotType()){
-//            g.drawLine(10, 790, 10, 600);
-//        }
-//        g.drawLine(20, 790, 20, 600);
-//
-//    }
 
     public boolean getPlotType(){
         if(((String) yearOrMonth.getSelectedItem()).equals("Roczny")) return true;
         else return false;
     }
 
+    public String getWhichCurr(){ return (String) currencyToPlot.getSelectedItem(); }
+
     public String getWhichYear(){
         return (String) whichYearBox.getSelectedItem();
     }
 
     public String getWhichMonth(){
-        return (String) whichMonthBox.getSelectedItem();
+        switch((String)whichMonthBox.getSelectedItem()){
+            case "Styczeń":
+                return "01";
+            case "Luty":
+                return "02";
+            case "Marzec":
+                return "03";
+            case "Kwiecień":
+                return "04";
+            case "Maj":
+                return "05";
+            case "Czerwiec":
+                return "06";
+            case "Lipiec":
+                return "07";
+            case "Sierpień":
+                return "08";
+            case "Wrzesień":
+                return "09";
+            case "Październik":
+                return "10";
+            case "Listopad":
+                return "11";
+            case "Grudzień":
+                return "12";
+            default:
+                return "";
+        }
     }
 
     public void setPP(PlotPanel pp){
